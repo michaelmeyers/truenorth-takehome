@@ -39,11 +39,29 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-type SectionProps = PropsWithChildren<{
-  title: string
-}>
+const GET_STARSHIPS = gql`
+  query GetStarships {
+    allStarships {
+      starships {
+        model
+        name
+        passengers
+        starshipClass
+      }
+    }
+  }
+`
+interface Starship {}
+
+interface StarshipQuery {
+  loading: boolean
+  error?: ApolloError | undefined
+  data: Starship[] | undefined
+}
 
 function MainView (): JSX.Element {
+  const { loading, error, data }: StarshipQuery = useQuery(GET_STARSHIPS)
+
   return (
     <View style={styles.sectionContainer}>
       <View style={{ height: 100, width: 100, backgroundColor: 'orange' }} />
