@@ -81,7 +81,7 @@ function StarshipItem (props: StarShipItem): JSX.Element {
         <View style={styles.tableView}>
           {shipTableData.map(({ name, value, subValue }) => {
             return (
-              <View style={styles.shipTableView}>
+              <View style={styles.shipTableView} key={name}>
                 <View style={styles.shipTableLabel}>
                   <Text style={styles.tableText}>{name}</Text>
                 </View>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   displayContainer: {
-    backgroundColor: 'grey',
+    backgroundColor: '#bbbbbb',
     borderRadius: 5,
     padding: 10
   },

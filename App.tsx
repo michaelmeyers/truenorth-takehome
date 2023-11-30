@@ -8,6 +8,7 @@
 import React from 'react'
 import { SafeAreaView, StatusBar, useColorScheme } from 'react-native'
 
+import DistanceFromStarwarsLand from './components/DistanceFromStarwarsLand'
 import MainView from './components/MainView'
 
 import { Colors } from 'react-native/Libraries/NewAppScreen'
@@ -51,6 +52,7 @@ function App (): JSX.Element {
     <ApolloProvider client={client}>
       <SafeAreaView style={{ backgroundColor: Colors.darker }}>
         <StatusBar barStyle={'light-content'} backgroundColor={Colors.darker} />
+        <DistanceFromStarwarsLand />
         <MainView />
       </SafeAreaView>
     </ApolloProvider>
