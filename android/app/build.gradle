@@ -73,7 +73,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.takehome"
+    namespace "dev.takehome"
     defaultConfig {
         applicationId "dev.takehome"
         minSdkVersion rootProject.ext.minSdkVersion
