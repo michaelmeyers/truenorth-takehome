@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Platform, Button } from 'react-native'
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
 import Geolocation from 'react-native-geolocation-service'
+import { getDistance, convertDistance } from 'geolib'
 
 interface DistanceFromStarwarsLandProps {}
 
 interface Coordinate {
   latitude: number
   longitude: number
+}
+
+const StarwarsLandCoords: Coordinate = {
+  latitude: 33.814831976267016,
+  longitude: -117.92057887641796
 }
 
 function DistanceFromStarwarsLand (
@@ -45,10 +51,7 @@ function DistanceFromStarwarsLand (
           setCurrentCoords(coords)
         }
       },
-      error => {
-        // See error code charts below.
-        console.log('ERROR', error.code, error.message)
-      },
+      error => {},
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     )
   }
@@ -79,28 +82,59 @@ function DistanceFromStarwarsLand (
     }
   }, [locationPermission])
 
-  return (
+  const convertTwoCoordsIntoDistanceInMiles = (
+    coord1: Coordinate | undefined,
+    coord2: Coordinate | undefined
+  ) => {
+    if (!coord1 || !coord2) {
+      return undefined
+    }
+
+    const distanceInMeters = getDistance(coord1, coord2)
+    return Math.trunc(convertDistance(distanceInMeters, 'mi'))
+  }
+
+  const distanceInMiles = convertTwoCoordsIntoDistanceInMiles(
+    currentCoords,
+    StarwarsLandCoords
+  )
+  return currentCoords ? (
     <View style={styles.container}>
       <View style={styles.row}>
-        {currentCoords ? (
-          <Text>{`Latitude: ${currentCoords?.latitude}   Longitude: ${currentCoords?.longitude}`}</Text>
-        ) : (
-          <Text>{`${locationPermission}`}</Text>
+        {currentCoords && (
+          <Text>
+            <Text style={styles.starwarsText}>STARWARS LAND</Text>
+            <Text
+              style={styles.distanceText}
+            >{`  ${distanceInMiles} mile(s) away`}</Text>
+          </Text>
         )}
-        <Button title='Locate' onPress={getGeolocation} />
       </View>
     </View>
+  ) : (
+    <View />
   )
 }
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
-    backgroundColor: 'red',
     height: 50
   },
   row: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1
+  },
+  starwarsText: {
+    color: '#ffe81f',
+    fontSize: 20
+  },
+  distanceText: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    fontSize: 15,
+    color: 'white'
   }
 })
 
