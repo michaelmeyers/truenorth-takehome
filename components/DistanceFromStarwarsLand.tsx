@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Platform, Button } from 'react-native'
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions'
+import Geolocation from 'react-native-geolocation-service'
 
 interface DistanceFromStarwarsLandProps {}
+
+interface Coordinate {
+  latitude: number
+  longitude: number
+}
 
 function DistanceFromStarwarsLand (
   props: DistanceFromStarwarsLandProps
@@ -29,37 +35,59 @@ function DistanceFromStarwarsLand (
   }
 
   const getGeolocation = () => {
-    console.log('TIME TO TO FETCH THE LOCATION')
+    Geolocation.getCurrentPosition(
+      position => {
+        const coords = {
+          latitude: position?.coords?.latitude,
+          longitude: position?.coords?.longitude
+        }
+        if (coords.latitude && coords.longitude) {
+          setCurrentCoords(coords)
+        }
+      },
+      error => {
+        // See error code charts below.
+        console.log('ERROR', error.code, error.message)
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    )
   }
 
   const [locationPermission, setLocationPermission] = useState<string>('')
+  const [currentCoords, setCurrentCoords] = useState<Coordinate | undefined>()
 
   useEffect(() => {
     checkLocationPermission()
   }, [])
 
   useEffect(() => {
-    // LOOKS LIKE WE CANNOT REQUEST AGAIN?  I GUESS THIS LIBRARY DOES NOT WORK THAT WAY?  MAYBE ADD A NOTE TO TELL THEM TO TURN IT ON
-    switch (locationPermission) {
-      case RESULTS.UNAVAILABLE:
-      case RESULTS.DENIED:
-        requestLocationPermission()
-        break
-      case RESULTS.BLOCKED:
-        break
-      case RESULTS.LIMITED:
-      case RESULTS.GRANTED:
-        getGeolocation()
-        break
-      default:
-        requestLocationPermission()
+    if (!currentCoords) {
+      switch (locationPermission) {
+        case RESULTS.UNAVAILABLE:
+        case RESULTS.DENIED:
+          requestLocationPermission()
+          break
+        case RESULTS.BLOCKED:
+          break
+        case RESULTS.LIMITED:
+        case RESULTS.GRANTED:
+          getGeolocation()
+          break
+        default:
+          requestLocationPermission()
+      }
     }
   }, [locationPermission])
 
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Text>{`${locationPermission}`}</Text>
+        {currentCoords ? (
+          <Text>{`Latitude: ${currentCoords?.latitude}   Longitude: ${currentCoords?.longitude}`}</Text>
+        ) : (
+          <Text>{`${locationPermission}`}</Text>
+        )}
+        <Button title='Locate' onPress={getGeolocation} />
       </View>
     </View>
   )
