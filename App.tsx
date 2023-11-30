@@ -50,7 +50,7 @@ function App (): JSX.Element {
 
   return (
     <ApolloProvider client={client}>
-      <SafeAreaView style={{ backgroundColor: Colors.darker }}>
+      <SafeAreaView style={{ backgroundColor: Colors.darker, flex: 1 }}>
         <StatusBar barStyle={'light-content'} backgroundColor={Colors.darker} />
         <DistanceFromStarwarsLand />
         <MainView />

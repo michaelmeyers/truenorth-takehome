@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 
 import { useQuery, ApolloError } from '@apollo/client'
 import { GET_STARSHIPS } from '../App'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
 
 interface Starship {
   costInCredits: number
@@ -111,8 +112,8 @@ function MainView (): JSX.Element {
 
   if (!data) {
     return (
-      <View>
-        <Text>The data is far far away</Text>
+      <View style={styles.container}>
+        <Text style={styles.loadingText}>The data is far far away</Text>
       </View>
     )
   }
@@ -136,7 +137,9 @@ function MainView (): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: '#222222'
+  },
   itemContainer: {
     paddingVertical: 10,
     paddingHorizontal: 10
@@ -167,7 +170,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   tableText: {
-    fontSize: 11
+    fontSize: 11,
+    color: 'black'
   },
   tableSubText: {
     fontSize: 8,
@@ -180,7 +184,14 @@ const styles = StyleSheet.create({
   },
   starshipName: {
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: 'black'
+  },
+  loadingText: {
+    paddingTop: 20,
+    fontSize: 18,
+    textAlign: 'center',
+    color: '#ffe81f'
   }
 })
 
